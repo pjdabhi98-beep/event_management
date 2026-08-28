@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <!-- Participant List View -->
+    <record id="view_event_participant_list" model="ir.ui.view">
+        <field name="name">event.participant.list</field>
+        <field name="model">event.participant</field>
+        <field name="arch" type="xml">
+            <list string="Participants">
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="gender"/>
+                <field name="company"/>
+                <field name="job_title"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Participant Form View -->
+    <record id="view_event_participant_form" model="ir.ui.view">
+        <field name="name">event.participant.form</field>
+        <field name="model">event.participant</field>
+        <field name="arch" type="xml">
+            <form string="Participant">
+
+                <sheet>
+
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Registration smart button can be added later
+                             after both branches are merged -->
+                    </div>
+
+                    <widget name="web_ribbon"
+                            title="Archived"
+                            bg_color="text-bg-danger"
+                            invisible="active"/>
+
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="date_of_birth"/>
+                        </group>
+
+                        <group>
+                            <field name="gender"/>
+                            <field name="company"/>
+                            <field name="job_title"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Participant Search View -->
+    <record id="view_event_participant_search" model="ir.ui.view">
+        <field name="name">event.participant.search</field>
+        <field name="model">event.participant</field>
+        <field name="arch" type="xml">
+
+            <search string="Search Participants">
+
+                <!-- Search Fields -->
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="company"/>
+                <field name="job_title"/>
+
+
+                <!-- Filters -->
+                <filter name="filter_active"
+                        string="Active"
+                        domain="[('active', '=', True)]"/>
+
+                <filter name="filter_archived"
+                        string="Archived"
+                        domain="[('active', '=', False)]"/>
+
+                <separator/>
+
+                <filter name="filter_male"
+                        string="Male"
+                        domain="[('gender', '=', 'male')]"/>
+
+                <filter name="filter_female"
+                        string="Female"
+                        domain="[('gender', '=', 'female')]"/>
+
+                <filter name="filter_other"
+                        string="Other"
+                        domain="[('gender', '=', 'other')]"/>
+
+
+                <!-- Group By -->
+                <group expand="0" string="Group By">
+
+                    <filter name="group_by_gender"
+                            string="Gender"
+                            context="{'group_by': 'gender'}"/>
+
+                    <filter name="group_by_company"
+                            string="Company"
+                            context="{'group_by': 'company'}"/>
+
+                    <filter name="group_by_job_title"
+                            string="Job Title"
+                            context="{'group_by': 'job_title'}"/>
+
+                    <filter name="group_by_active"
+                            string="Active Status"
+                            context="{'group_by': 'active'}"/>
+
+                </group>
+
+            </search>
+
+        </field>
+    </record>
+
+
+    <!-- Participant Action -->
+    <record id="action_event_participant" model="ir.actions.act_window">
+        <field name="name">Participants</field>
+        <field name="res_model">event.participant</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_event_participant_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first participant!
+            </p>
+        </field>
+    </record>
+
+
+    <!-- Participant Menu -->
+    <menuitem id="menu_event_participant"
+              name="Participants"
+              parent="menu_event_management_root"
+              action="action_event_participant"
+              sequence="10"/>
+
+</odoo>
