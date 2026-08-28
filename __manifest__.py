@@ -4,7 +4,12 @@
     'category': 'Events',
     'summary': 'Event and Venue Management',
     'depends': ['base'],
-    'data': [],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/sequences.xml',
+        'views/event_views.xml',
+        'views/venue_views.xml',
+    ],
     'installable': True,
     'application': True,
 }
