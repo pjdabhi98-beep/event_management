@@ -85,5 +85,6 @@ class EventEvent(models.Model):
     def _onchange_venue_id(self):
         if self.venue_id:
             self.capacity = self.venue_id.capacity
+            self.location = self.venue_id.location
 
 
