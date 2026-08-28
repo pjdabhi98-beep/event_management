@@ -1,4 +1,5 @@
-from odoo import models, fields
+from odoo import models, fields,api
+from odoo.exceptions import ValidationError
 
 
 class EventEvent(models.Model):
@@ -66,4 +67,23 @@ class EventEvent(models.Model):
 
     def action_reset_to_draft(self):
         self.write({'status': 'draft'})
+
+    
+    @api.constrains('capacity', 'venue_id')
+    def _check_capacity(self):
+        for event in self:
+            if event.capacity <= 0:
+                raise ValidationError(
+                    "Event capacity must be greater than 0."
+                )
+
+            if event.venue_id and event.capacity > event.venue_id.capacity:
+                raise ValidationError(
+                    "Event capacity cannot be greater than the venue capacity."
+                )
+    @api.onchange('venue_id')
+    def _onchange_venue_id(self):
+        if self.venue_id:
+            self.capacity = self.venue_id.capacity
+
 

@@ -1,4 +1,5 @@
-from odoo import models, fields
+from odoo import models, fields,api
+from odoo.exceptions import ValidationError
 
 
 class EventVenue(models.Model):
@@ -27,4 +28,14 @@ class EventVenue(models.Model):
         'venue_id',
         string='Events'
     )
+    
+    @api.constrains('capacity')
+    def _check_capacity(self):
+        for venue in self:
+            if venue.capacity <= 0:
+                raise ValidationError(
+                    "Venue capacity must be greater than 0."
+                )
+
+
 
