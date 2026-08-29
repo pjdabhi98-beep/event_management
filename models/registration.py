@@ -22,6 +22,12 @@ class EventRegistration(models.Model):
         ondelete='cascade'
     )
 
+    event_id = fields.Many2one(
+    'event.event',
+    string='Event',
+    required=True,
+    ondelete='restrict'
+)
     registration_date = fields.Datetime(
         string='Registration Date',
         default=fields.Datetime.now,
@@ -47,8 +53,8 @@ class EventRegistration(models.Model):
     _sql_constraints = [
         (
             'unique_participant_registration',
-            'unique(participant_id)',
-            'This participant is already registered.'
+            'unique(participant_id, event_id)',
+            'This participant is already registered for this event.'
         ),
     ]
 
@@ -62,19 +68,52 @@ class EventRegistration(models.Model):
 
         return super().create(vals_list)
 
-    @api.constrains('registration_date')
-    def _check_registration_date(self):
+
+    @api.constrains('event_id')
+    def _check_event_date(self):    
         for record in self:
-            if record.registration_date and record.registration_date < fields.Datetime.now():
+            if record.event_id and record.event_id.date < fields.Datetime.now():
                 raise ValidationError(
-                    'Registration date cannot be in the past.'
+                    'You cannot register for an event whose date has passed.'
                 )
+
+  
+
+    @api.constrains('event_id', 'state')
+    def _check_event_capacity(self):
+        for registration in self:
+            if registration.event_id and registration.state == 'confirmed':
+                confirmed_count = self.search_count([
+                    ('event_id', '=', registration.event_id.id),
+                    ('state', '=', 'confirmed'),
+                    ('id', '!=', registration.id),
+                ])
+
+                if confirmed_count >= registration.event_id.capacity:
+                    raise ValidationError(
+                        'Event capacity is full. This registration cannot be confirmed.'
+                    )
 
     def action_confirm(self):
         for record in self:
             if record.state == 'cancelled':
+                    raise ValidationError(
+                'A cancelled registration cannot be confirmed.'
+                )
+
+            if not record.event_id:
                 raise ValidationError(
-                    'A cancelled registration cannot be confirmed.'
+                    'Please select an event before confirming the registration.'
+                )
+
+            if record.event_id.status in ['cancelled', 'completed']:
+                raise ValidationError(
+                    'Registration cannot be confirmed for a cancelled or completed event.'
+                )
+
+            if record.event_id.date < fields.Datetime.now():
+                raise ValidationError(
+                    'Registration cannot be confirmed because the event date has passed.'
                 )
 
             record.state = 'confirmed'

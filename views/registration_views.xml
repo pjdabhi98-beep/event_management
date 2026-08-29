@@ -9,6 +9,7 @@
         <list string="Registrations">
             <field name="name"/>
             <field name="participant_id"/>
+            <field name="event_id"/>
             <field name="registration_date"/>
             <field name="state"/>
         </list>
@@ -52,6 +53,7 @@
                         <group>
                             <field name="name"/>
                             <field name="participant_id"/>
+                            <field name="event_id"/>
                         </group>
 
                         <group>
@@ -83,6 +85,7 @@
                 <!-- Search Fields -->
                 <field name="name"/>
                 <field name="participant_id"/>
+                <field name="event_id"/>
                 <field name="state"/>
                 <field name="registration_date"/>
 
