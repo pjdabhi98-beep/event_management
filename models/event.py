@@ -52,6 +52,40 @@ class EventEvent(models.Model):
         string='Venue',
         ondelete='restrict'
     )
+    registration_ids = fields.One2many(
+    'event.registration',
+    'event_id',
+    string='Registrations'
+    )
+
+    registered_count = fields.Integer(
+    string='Registered',
+    compute='_compute_registered_count',
+    store=True
+    )
+
+    available_seats = fields.Integer(
+    string='Available Seats',
+    compute='_compute_available_seats',
+    store=True
+    )
+    @api.depends('registration_ids.state')
+    def _compute_registered_count(self):
+        for event in self:
+            event.registered_count = len(
+                event.registration_ids.filtered(
+                    lambda registration: registration.state == 'confirmed'
+            )
+        )
+
+
+    @api.depends('capacity', 'registered_count')
+    def _compute_available_seats(self):
+        for event in self:
+            event.available_seats = max(
+                event.capacity - event.registered_count,
+                0
+        )
 
     def action_confirm(self):
         self.write({'status': 'confirmed'})

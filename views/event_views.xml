@@ -13,6 +13,8 @@
                 <field name="location"/>
                 <field name="venue_id"/>
                 <field name="capacity"/>
+                <field name="registered_count" readonly="1"/>
+                <field name="available_seats" readonly="1"/>
                 <field name="status"/>
             </list>
         </field>
@@ -79,6 +81,8 @@
                         <group>
                             <field name="location"/>
                             <field name="capacity"/>
+                            <field name="registered_count" readonly="1"/>
+                            <field name="available_seats" readonly="1"/>
                         </group>
                     </group>
 

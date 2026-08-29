@@ -138,12 +138,6 @@
     </record>
 
 
-    <!-- Main Menu -->
-    <menuitem id="menu_event_management_root"
-              name="Event Management"
-              sequence="10"/>
-
-
     <!-- Registration Menu -->
     <menuitem id="menu_event_registration"
               name="Registrations"

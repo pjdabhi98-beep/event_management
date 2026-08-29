@@ -21,6 +21,12 @@ class EventRegistration(models.Model):
         required=True,
         ondelete='cascade'
     )
+    event_id = fields.Many2one(
+    'event.event',
+    string='Event',
+    required=True,
+    ondelete='cascade'
+)
 
     registration_date = fields.Datetime(
         string='Registration Date',
@@ -43,14 +49,13 @@ class EventRegistration(models.Model):
     notes = fields.Text(
         string='Notes'
     )
-
     _sql_constraints = [
-        (
-            'unique_participant_registration',
-            'unique(participant_id)',
-            'This participant is already registered.'
-        ),
-    ]
+    (
+        'unique_participant_event',
+        'unique(participant_id, event_id)',
+        'This participant is already registered for this event.'
+    ),
+]
 
     @api.model_create_multi
     def create(self, vals_list):
